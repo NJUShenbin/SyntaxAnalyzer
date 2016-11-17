@@ -30,6 +30,6 @@ public abstract class Action {
 
     @Override
     public int hashCode() {
-        return getClass().hashCode();
+        return getClass().hashCode()+num;
     }
 }

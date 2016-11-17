@@ -4,6 +4,7 @@ import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
 import org.junit.Test;
 
+import java.util.HashMap;
 import java.util.Map;
 
 import static org.junit.Assert.*;
@@ -26,10 +27,14 @@ public class ActionTest {
 
     @Test
     public void testHash(){
-        BiMap<Integer,Action> map = HashBiMap.create();
-        map.put(1,new Error());
-        assert map.inverse().get(new Error())!=null;
-        assert map.inverse().get(new Reduce(-1))==null;
+//        BiMap<Integer,Action> map = HashBiMap.create();
+//        map.put(1,new Error());
+//        assert map.inverse().get(new Error())!=null;
+//        assert map.inverse().get(new Reduce(-1))==null;
+
+        Map<Action,Character> actionMap = new HashMap<>();
+        actionMap.put(new Shift(6),'c');
+        assert actionMap.get(new Shift(6))!=null;
     }
 
 }

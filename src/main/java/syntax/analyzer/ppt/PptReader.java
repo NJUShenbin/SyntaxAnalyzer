@@ -5,6 +5,7 @@ import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
+import syntax.action.Accept;
 import syntax.action.Action;
 import syntax.action.Reduce;
 import syntax.action.Shift;
@@ -31,14 +32,23 @@ public class PptReader {
         HSSFRow inputCharRow = sheet.getRow(1);
 
         for(Row oneRow : sheet){
+            if(oneRow.getCell(0)==null){
+                continue;
+            }
             if(oneRow.getCell(0).getCellType()!= Cell.CELL_TYPE_NUMERIC){
                 continue;
             }
 
+            Map<Character, Action> actionMap =
+                    getActionMap(oneRow,inputCharRow,gotoIndex);
 
+            Map<Character,Integer> gotoMap =
+                    getGotoMap(oneRow,inputCharRow,gotoIndex);
 
+            ppt.addState(actionMap,gotoMap);
         }
 
+        return ppt;
     }
 
     private Map<Character, Action> getActionMap
@@ -54,13 +64,43 @@ public class PptReader {
             }
 
             Action action = createAction(cell.getStringCellValue());
-            // TODO: 2016/11/16 把action对应的输入字符加进map
-//            char c = cell
 
+            char c = getGotoOrIndexKey(cell,inputCharRow);
+            actionMap.put(c,action);
         }
+        return actionMap;
+    }
+
+    private Map<Character, Integer> getGotoMap
+            (Row row,Row inputCharRow,int gotoIndex){
+
+        Map<Character, Integer> gotoMap = new HashMap<>();
+
+        for(Cell cell:row){
+            if(cell.getColumnIndex()<gotoIndex){
+                continue;
+            }
+
+            int stateNum = (int)cell.getNumericCellValue();
+            char c = getGotoOrIndexKey(cell,inputCharRow);
+            gotoMap.put(c,stateNum);
+        }
+        return gotoMap;
+    }
+
+    private char getGotoOrIndexKey(Cell cell,Row inputCharRow){
+        return inputCharRow
+                .getCell(cell.getColumnIndex())
+                .getStringCellValue()
+                .charAt(0);
     }
 
     private Action createAction(String content){
+
+        if(content.equals("accept")){
+            return new Accept();
+        }
+
         int num = Integer.valueOf(content.substring(1));
 
         if(content.startsWith("S")){
@@ -72,10 +112,6 @@ public class PptReader {
         throw new RuntimeException("invalid content:"+content);
     }
 
-    private Map<Character, Integer> getGotoMap
-            (Row row,Row inputCharRow,int gotoIndex){
-
-    }
 
     private HSSFSheet getSheet(String path){
         try {

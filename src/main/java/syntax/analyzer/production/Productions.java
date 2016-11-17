@@ -16,7 +16,7 @@ public class Productions {
     }
 
     public Production getProduction(int index){
-        return null;
+        return productionList.get(index);
     }
 
 }

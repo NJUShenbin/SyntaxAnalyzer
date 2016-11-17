@@ -23,12 +23,17 @@ public class Ppt {
         return stateList.get(state).getAction(a);
     }
 
+    public Integer getGoto(Integer state,char left){
+        return stateList.get(state).gotoState(left);
+    }
+
     public String getOperatorString(Stack<Integer> stateStack)
     {
         StringBuilder builder = new StringBuilder();
         for(int i=0;i<stateStack.size()-1;i++){
-            PptState currentState = stateList.get(i);
-            builder.append(currentState.getCharToState(i+1));
+            PptState currentState = stateList.get(stateStack.get(i));
+            Integer nextStateIndex = stateStack.get(i+1);
+            builder.append(currentState.getCharToState(nextStateIndex));
         }
         return builder.toString();
     }

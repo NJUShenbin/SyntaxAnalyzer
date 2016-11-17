@@ -8,6 +8,7 @@ import syntax.analyzer.production.ProductionReader;
 import syntax.analyzer.production.Productions;
 
 import java.util.LinkedList;
+import java.util.Queue;
 import java.util.Stack;
 
 /**
@@ -25,13 +26,14 @@ public class SyntaxAnalyzer {
 
 
     public void analyze(){
-        ActionExecutor actionExecutor = new ActionExecutor();
+
         Stack<Integer> stateStack = new Stack<>();
         stateStack.push(0);
 
         Productions productions = productionReader.read(productionPath);
         Ppt ppt = pptReader.read(pptPath);
-        Stack<Character> inputStack = inputReader.read(inputPath);
+        Queue<Character> inputStack = inputReader.read(inputPath);
+        ActionExecutor actionExecutor = new ActionExecutor(inputStack);
 
         while (!inputStack.isEmpty()){
 

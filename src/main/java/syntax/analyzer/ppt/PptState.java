@@ -37,6 +37,7 @@ public class PptState {
         Shift shift = new Shift(state);
         Character findByAction = actionMap.inverse().get(shift);
 
+
         if(findByAction!=null){
             return findByAction;
         }else {
